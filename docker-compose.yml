@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/data
+    restart: always
+    environment:
+      OLLAMA_MODEL: deepseek-ai/deepseek-r1-1.5b # Указываем модель 1.5B
+    command: ["ollama", "run", "deepseek-ai/deepseek-r1-1.5b"] # Запускаем модель 1.5B
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - "7860:7860"
+    depends_on:
+      - ollama
+    volumes:
+      - openwebui_data:/app/backend/data
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+    restart: always
+
+volumes:
+  ollama_data:
+  openwebui_data:
